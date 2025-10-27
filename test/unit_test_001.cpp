@@ -25,12 +25,12 @@
 
 
 #include "Arduino.h"
-#include "TLCBuffer.h"
+#include "RLCBuffer.h"
 
 
 unittest_setup()
 {
-  fprintf(stderr, "TLCBUFFER_LIB_VERSION: %s\n", (char *) TLCBUFFER_LIB_VERSION);
+  fprintf(stderr, "RLCBUFFER_LIB_VERSION: %s\n", (char *) RLCBUFFER_LIB_VERSION);
 }
 
 
@@ -41,16 +41,16 @@ unittest_teardown()
 
 unittest(test_constants)
 {
-  assertEqual(0x00, TLCBUFFER_OK);
+  assertEqual(0x00, RLCBUFFER_OK);
 }
 
 
 unittest(test_constructor)
 {
-  TLCBuffer TLCB(10);
+  RLCBuffer RLCB(10);
   
-  assertEqual(10, TLCB.size());
-  assertEqual(0, TLCB.count());
+  assertEqual(10, RLCB.size());
+  assertEqual(0, RLCB.count());
   
 }
 
