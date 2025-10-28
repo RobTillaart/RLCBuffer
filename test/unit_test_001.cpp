@@ -2,8 +2,8 @@
 //    FILE: unit_test_001.cpp
 //  AUTHOR: Rob Tillaart
 //    DATE: 2025-10-26
-// PURPOSE: unit tests for the TLCBuffer library
-//     URL: https://github.com/RobTillaart/TLCBuffer
+// PURPOSE: unit tests for the RLCBuffer library
+//     URL: https://github.com/RobTillaart/RLCBuffer
 //          https://github.com/Arduino-CI/arduino_ci/blob/master/REFERENCE.md
 //
 
