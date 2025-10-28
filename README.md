@@ -20,30 +20,30 @@ Arduino library for a Run Length Compressed Buffer.
 
 This library is to store data in a buffer with Run Length Compression.
 
-
-REWRITE FROM HERE
-
-
 The library is a spin of of the LogicAnalyzer library as it needs to store as much
 data as possible in limited RAM.
+
+The library works best for measurements that stay stable for longer times.
+If the measurements fluctuate a lot, the library is not suitable for the job.
+
 The data elements of the initial version are uint32_t as that matches my needs for now.
 In the future the library will be a template class supporting any data type.
 
+This library is strongly related to TLCBuffer, that uses time length compression.
 
 #### Application Measurements
 
 One has to make measurements and those measurements stays stable for long time and
 then has some short fluctuations.
-Instead of storing many times the same values in the buffer, the library stores how long
-(= duration) the data (= measurement) stays the same.
+Instead of storing many times the same values in the buffer, the library stores how many measurements stays the same.
 
 An example
 
 ```
-RLCBuffer = { (10000, 15), (200, 16), (550, 17), ...
+RLCBuffer = { (100, 15), (200, 16), (55, 17), ...
 ```
-The data stays 10000 milliseconds the value 15 and then for 200 milliseconds the
-value 16, followed by 550 milliseconds of value 17 etc.
+The data stream has 100 times the value 15 and then 200 times the value 16, followed by 55 times of value 17 etc.
+
 
 #### Application IO
 
@@ -53,23 +53,20 @@ that as one data unit. As long as the IO Lines stay the same only the duration i
 increased. When a button is pressed the value changes for a short time.
 
 ```
-RLCBuffer = { (10000000, 0x0000), (152, 0x0200), (500000, 0x0000), ...
+RLCBuffer = { (500, 0x0000), (10, 0x0200), (5, 0x0300), (5000, 0x0000), ...
 ```
-very long time no change, then suddenly a short time 1 pin HIGH followed by a long time
-no activity.
+very long time no change, then suddenly 10 measurements 1 pin HIGH, 3 measurements 
+2 pins HIGH, followed by a long time no activity.
 
 
 ### Notes
 
 The first element of the buffer has default the value 0. Might affect the working.
 
-Instead of the duration it is also possible to add the time-stamp of when the time
-changed. However that means for the duration one has to know the next change.
-Might be a breaking change in the future.
 
 ### Circular Buffer
 
-The first version of the **Time Length Compressed Buffer** is not a circular buffer,
+The first version of the **Run Length Compressed Buffer** is not a circular buffer,
 again as I do not need that yet. It might be implemented in the future.
 
 ### Related
@@ -82,7 +79,7 @@ again as I do not need that yet. It might be implemented in the future.
 
 ### Tested
 
-Tested on Arduino UNO R3
+Tested on Arduino UNO R3.
 
 
 ### Performance
@@ -105,6 +102,11 @@ Note: the performance of begin() depends on the size of the buffer.
 - **bool begin()** returns true if allocation succeeded.
 Only if succeeded the function resets the internal variables.
 
+Note that the RAM used by the buffer is 2 uint32_t (8 bytes) per element,
+one for the counter, and one for the value. 
+One could change the counter to an uint16_t to save some RAM.
+
+
 ### Meta
 
 - **uint32_t size()** return size set in constructor.
@@ -116,9 +118,11 @@ Only if succeeded the function resets the internal variables.
 
 ### Read Write
 
-- **void writeData(uint32_t value)**
-- **uint32_t readData(uint32_t index)**
-- **uint32_t readCount(uint32_t index)**
+- **void writeData(uint32_t value)** add an element to buffer.
+- **uint32_t readData(uint32_t index)** read an element.
+- **uint32_t readDuration(uint32_t index)** read the duration of an element.
+
+**writeData()** will increase the duration if the value equals the previous one. Otherwise it uses a new entry.
 
 ### Error
 
@@ -129,7 +133,7 @@ Only if succeeded the function resets the internal variables.
 
 - improve documentation
 - test functionality
--
+- keep in sync with TLCBuffer.
 
 #### Should
 
